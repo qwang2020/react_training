@@ -1,0 +1,67 @@
+<!--
+4. Render 2 div elements with the same structure as in the previous exercise. Try each of the following 3 ways to do it.
+a. Render the 2 divs as children of another div
+b. Add the 2 divs to an array and render the array of React elements
+c. Enclose the 2 divs in a React.Fragment and render
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.1/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.1/umd/react-dom.development.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+        <script type="text/babel">
+            //creates a React element     
+            let count = 9;
+            const el1 = (
+                <div title="react div" id="div1">                    
+                    <span id="counter">0 </span>
+
+                    <button type="button">   +   </button>
+
+                    <button type="button">   -   </button>
+
+                </div>
+            );
+            const el2 = (
+                <div title="react div2" id="div2">                    
+                    <span id="counter"> 1 </span>
+                    <button type="button">   Inc   </button>
+                    <button type="button">   Dec   </button>
+
+                </div>
+            );
+
+            ReactDOM.render(
+                    <div>
+                        {el1}
+                        {el2}
+                    </div>,
+                    document.getElementById('root'));
+                // use <React.Fragment>
+               8 ReactDOM.render(
+                    < React.Fragment>
+                        {el1}
+                        {el2}
+                    </React.Fragment>,
+                    document.getElementById('root'));
+                // use array
+                ReactDOM.render(
+                    [
+                        el1,
+                        el2,
+                        'array style'
+                    ],
+                    document.getElementById('root'));
+
+        </script>
+    </body>
+</html>
