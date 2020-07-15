@@ -1,0 +1,61 @@
+<!-- 6b. Create a class component that shows a number within a span. This number should initially be 1, and should double every second.
+     For example, after a second it becomes 2, then after another second 4, etc.
+ -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+        <script type="text/babel">
+            class IncClock extends React.Component { // this.props = props; (super)
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        number: 1,
+                    };                      
+                } 
+                render() { // UI = f( props, state )
+                    console.log('render');
+
+                    return (
+                        <div >                           
+                            <br />
+                            <span id="number counter">{this.state.number}</span>
+                        </div>
+                    );
+
+                }
+                
+                // after first render() call
+                // why using ++ not work ??
+                componentDidMount() {
+                    console.log('componentDidMount');
+                  
+                    setInterval(() => {                        
+                        this.setState(() => ({
+                            number: this.state.number+1
+                        }));
+                        console.log(this.state.number);
+                    }, 1000);
+                }
+            }            
+
+            
+            ReactDOM.render(                
+                <IncClock />,
+                    document.getElementById('root')
+            );
+        </script>
+    </body>
+</html>

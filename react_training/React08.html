@@ -1,0 +1,85 @@
+<!--8. Redo the above exercise by defining a new component called Contact. 
+    This takes the contact object as a prop and shows the contact details. Use it in the BusinessCard component.
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+        <script type="text/babel">
+            
+            // spread syntax/ destructuring assignment?
+            function Contact({ Tel,email, address }) {
+                return (
+                    <p>
+                        Telphone: {Tel}
+                        <br />
+                        e-mail: {email}
+                        <br />
+                        Address : {address}
+                    </p>
+                );
+            }
+              function BusinessCard(
+                {
+                    fullname, 
+                    Designation,
+                    Company,
+                    Imagepath,
+                    ...Contacts,                    
+                }
+            ) {                
+                
+                return (
+                    <div className="container my-5">
+                        <div className="alert alert-primary">
+                            <h2>Full Name : {fullname} </h2>
+                            <hr />
+                            Designation : {Designation} 
+                            <p>
+                                Company: {Company}
+                                <br />                               
+                                <Contact {...Contacts} />                            
+                                Imagepath : {Imagepath}
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            const fullname = 'Jane Fonta', Designation = 'director', Company = 'SONY';
+            const Tel = '202-345-6789' ,email = 'Janefonda@gmail.com',address = '1600 Amphitheatre Parkway, Mountain View, California';
+            const Imagepath = './name-of-image.jpg';
+
+           
+
+            const props = {
+                fullname,
+                Designation,
+                Company,  
+                Imagepath,
+                Tel,email,address               
+            };
+
+            // Step 1: Render a WeatherReport element and pass data of different types as props
+            // Step 3: Gather all the props to be passed in an object (say props), and pass it using props spread syntax ({ ...props } when creating the element)
+            ReactDOM.render(
+                <BusinessCard {...props} />,
+                    document.getElementById( 'root' )
+                );
+        </script>
+    </body>
+</html>

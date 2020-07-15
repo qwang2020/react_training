@@ -1,0 +1,72 @@
+<!-- 6a. Redo the above exercise (Q.5) using a class component.
+ -->
+ <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+        <script type="text/babel">
+            
+                class TaskInput extends React.Component {
+                    constructor(props) {
+                        super(props);
+                        this.state = { 
+                            inputvalue: ''  ,
+                            TodTasks  : ''                      
+                    };
+
+                        this.inputChange = this.inputChange.bind(this);
+                        this.SubmitInput = this.SubmitInput.bind(this);
+                       
+                    }
+
+                    inputChange(event) {
+                        console.log('inputChange');
+                        this.setState({ inputvalue: event.target.value });
+                    }
+
+                    SubmitInput(event) {      
+                        console.log('SubmitInput'); 
+                        event.preventDefault();     
+                        this.state.TodTasks =     this.state.inputvalue;
+                        this.setState({ inputvalue: event.target.value }); // still set state to triger a render
+                        console.log(this.state.TodTasks);
+                        
+                    }
+
+                    render() {  console.log('render');      
+                        return (
+                            <form onSubmit={this.SubmitInput}>
+                                <label>
+                                    Task input:
+                                <input type="text" value={this.state.inputvalue} onChange={this.inputChange} />
+                                </label>
+                                <input type="submit" value="Add Task" />
+
+                                <div>
+                                    Your Input task is: {this.state.TodTasks}
+                                </div>              
+
+                            </form>
+                        );
+                    }
+                }
+
+                ReactDOM.render(
+                    <TaskInput />,
+                    document.getElementById('root')
+                );
+        </script>
+    </body>
+</html>

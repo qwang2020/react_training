@@ -1,0 +1,145 @@
+<!--9. Define a TaskList component (class component) that takes an array of tasks like below.
+```
+const tasks = [
+    { name: 'Buy milk', completed: true },
+    { name: 'Learn React', completed: false },
+]
+```
+The TaskList renders the tasks within an ordered list (ol, li). Each li should have a checkbox, name of the task and a delete button.
+Define a App component that has a TaskInput element and TaskList element as children. The app takes the tasks array as prop and passes it
+down to TaskList component. Render the App component element.You can also define a TaskListItem component if you like. 
+It renders a single task (checkbox, name of the task and a delete button).
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+        <script type="text/babel">
+
+            class TaskInput extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        inputvalue: '',
+                        TodTasks: ''
+                    };
+
+                    this.inputChange = this.inputChange.bind(this);
+                    this.SubmitInput = this.SubmitInput.bind(this);
+
+                }
+
+                inputChange(event) {
+                    console.log('inputChange');
+                    this.setState({ inputvalue: event.target.value });
+                }
+
+                SubmitInput(event) {
+                    console.log('SubmitInput');
+                    event.preventDefault();
+                    this.state.TodTasks = this.state.inputvalue;
+                    this.setState({ inputvalue: event.target.value }); // still set state to triger a render
+                    console.log(this.state.TodTasks);
+
+                }
+
+                render() {
+                    console.log('render');
+                    return (
+                        <form onSubmit={this.SubmitInput}>
+                            <label>
+                                Task input:
+                                        <input type="text" value={this.state.inputvalue} onChange={this.inputChange} />
+                            </label>
+                            <input type="submit" value="Add Task" />
+
+                            <div>
+                                Add this task into TaskList: {this.state.TodTasks}
+                            </div>
+
+                        </form>
+                    );
+                }
+            }
+            class TaskList extends React.Component {
+                    constructor(props) {
+                        super(props);
+                        this.state = {
+                            completed: this.props.completed,
+                            deleted: false,
+                        };
+                        this.taskname = this.props.name;
+                        this.index = this.props.index;
+                    }
+
+                    /// Question ,why use arrow funcitron it works, but can use a normal funciton outside????
+                    /// ???? Cannot read property ‘setState’ of undefined
+                    /*  onClickdelete() {
+                      console.log('Click delete!');
+                      this.setState({ deleted: true});
+                      console.log(this.state.deleted);
+                      }*/
+
+                    render() {
+                        console.log('render');
+                        if (this.state.deleted === true)
+                            return (  
+                                <React.Fragment>                        
+                                </React.Fragment>                              
+                            );
+                        else
+                            return (
+                                <React.Fragment>  
+                                    <li ></li>
+                                    <button type="button" onClick={() => { this.setState({ deleted: true }); }}>Delete </button>
+                                    <label><input type="checkbox" />{this.taskname}</label>
+                                    
+                                </React.Fragment> 
+                            );
+                    }
+                }
+
+        const tasks = [
+            { name: 'Buy milk', completed: true },
+            { name: 'Learn React', completed: false },
+        ];       
+
+
+         class APP extends React.Component {
+                constructor(props) {
+                    super(props);
+                }
+                render() {
+                    return (
+                        <React.Fragment>
+                        <TaskInput />
+                        <ol>
+                        <TaskList {...tasks[0]} />
+                        <TaskList {...tasks[1]} />
+                        </ol>
+                        </React.Fragment>
+                         );
+                }
+            }
+        ReactDOM.render(
+                    <APP />,
+                    document.getElementById('root')
+                );
+
+        </script>
+    </body>
+</html>
