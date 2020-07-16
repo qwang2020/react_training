@@ -1,0 +1,176 @@
+<!--13. We shall add filter funcitonality in the todo list. 
+    Add a dropdown with options - 'All', 'Completed', 'Not completed'. 'All' should be selected by default,
+    and all tasks are shown. When 'Completed' is selected, only completed tasks are shown. When 'Not completed' 
+    is selected, only incomplete tasks are shown.
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+     <head>
+         <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+         <title>Document</title>
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+         <style>
+             .bold {
+                 font-weight: bold;
+             }
+         </style>
+     <body>
+         <div id="root"></div>
+ 
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+         
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+ 
+         <script type="text/babel">
+ 
+ class TaskInput extends React.Component {
+                 constructor(props) {
+                     super(props);                   
+ 
+                     this.inputChange = this.inputChange.bind(this);
+                     this.SubmitInput = this.SubmitInput.bind(this);
+ 
+                 }
+ 
+                 inputChange(event) {
+                     console.log('inputChange');
+                     this.props.oninputChanged(event.target.value);
+                 }
+ 
+                 SubmitInput(event) {
+                     console.log('SubmitInput');
+                     event.preventDefault(); 
+                     this.props.onSubmitInput(event.target.value);                 
+                 }
+ 
+                 render() {                     
+                     const taskname = this.props.taskname;
+                     return (
+                         <form onSubmit={this.SubmitInput}>
+                             <label>
+                                 Task input:
+                                         <input type="text" value={taskname} onChange={this.inputChange} />
+                             </label>
+                             <input type="submit" value="Add Task" />
+                             
+ 
+                         </form>
+                     );
+                 }
+             }
+             class TaskItem extends React.Component {
+                     constructor(props) {
+                         super(props);
+                         this.state = {
+                             completed: this.props.completed,
+                             deleted: false,
+                         };
+                         this.taskname = this.props.name;
+                         this.index = this.props.index;
+                     }
+ 
+                     render() {                                       
+ 
+                             return ( (this.state.deleted === true)? null:
+                             <React.Fragment>  
+                                 <li className="card border-primary"
+                                     style={{textDecoration: this.state.completed ? "line-through" : "none",
+                                     color: this.state.completed ? "red" : "black" }} >{this.taskname}</li>
+                                 <button type="button" onClick={() => { this.setState({ deleted: true }); }}>Delete </button>
+                                 <label><input type="checkbox"  onClick={()=>{this.setState({completed:!this.state.completed})}} 
+                                 checked={this.state.completed}/>Completed</label>                                
+                                 
+                             </React.Fragment> 
+                             );
+                     }
+                 }          
+ 
+ 
+          class TaskToDoList extends React.Component {
+                 constructor(props) {
+                     super(props);
+                     this.state = {
+                         newTaskname: '', 
+                         addTask:false,
+                         filter:  'all',
+                         tasks: [
+                         { name: 'Buy milk', completed: true },
+                         { name: 'Learn React', completed: false } ]
+                         };
+ 
+                     this.handleinputChanged = this.handleinputChanged.bind(this);
+                     this.handleSubmitInput = this.handleSubmitInput.bind(this);
+                     this.handlefilterChange = this.handlefilterChange.bind(this);
+ 
+                     this.tasks = [
+                         { name: 'Buy milk', completed: true },
+                         { name: 'Learn React', completed: false },
+                     ];  
+                 }               
+                 handleinputChanged(newtaskname) 
+                 {
+                  this.setState({newTaskname: newtaskname });
+                 }
+                 handlefilterChange(event) 
+                 {
+                     console.log(this.state.filter);
+                     console.log(` new filter is: ${event.target.value}`);
+                    this.setState({filter: event.target.value });
+                 }
+                 handleSubmitInput(newtaskname) 
+                 {
+                     // update to tasks array
+                  this.state.tasks.push({name:this.state.newTaskname,completed:false});
+                  this.setState({addTask: true});
+                  console.log(this.state.tasks);
+                 }
+                
+                 render() {
+                     const taskname = this.state.newTaskname;
+                     const allCurTasks  = this.state.tasks.filter( (task)=>{
+                        if (this.state.filter === 'completed')
+                         return task.completed === true;
+                     else if (this.state.filter === 'notcompleted')
+                         return task.completed === false;
+                     else
+                         return true;
+                     }
+                     );     
+                     console.log(allCurTasks);            
+                     return (
+                         <React.Fragment>
+                         <TaskInput 
+                         oninputChanged={this.handleinputChanged} 
+                         onSubmitInput={this.handleSubmitInput} />
+                         <div>
+                            Use Filter :
+                         <select value={this.state.filter} onChange={this.handlefilterChange}>
+                                 <option selected value="all">ALL</option>
+                                 <option value="completed">Completed</option>
+                                 <option value="notcompleted">Not completed</option>                                
+                         </select>
+                         </div>
+                         
+                         <ol>                                            
+                         {
+                             allCurTasks.map(( taskitem ) => (
+                                 <TaskItem {...taskitem} />
+                             ))
+                         }
+                         </ol>
+                         </React.Fragment>
+                          );
+                     
+                 }
+             }
+         ReactDOM.render(
+                     <TaskToDoList />,
+                     document.getElementById('root')
+                 );
+ 
+         </script>
+     </body>
+ </html>

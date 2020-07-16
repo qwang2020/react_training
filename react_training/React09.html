@@ -32,11 +32,7 @@ It renders a single task (checkbox, name of the task and a delete button).
 
             class TaskInput extends React.Component {
                 constructor(props) {
-                    super(props);
-                    this.state = {
-                        inputvalue: '',
-                        TodTasks: ''
-                    };
+                    super(props);                   
 
                     this.inputChange = this.inputChange.bind(this);
                     this.SubmitInput = this.SubmitInput.bind(this);
@@ -45,31 +41,26 @@ It renders a single task (checkbox, name of the task and a delete button).
 
                 inputChange(event) {
                     console.log('inputChange');
-                    this.setState({ inputvalue: event.target.value });
+                    this.props.oninputChanged(event.target.value);
                 }
 
                 SubmitInput(event) {
                     console.log('SubmitInput');
-                    event.preventDefault();
-                    this.state.TodTasks = this.state.inputvalue;
-                    this.setState({ inputvalue: event.target.value }); // still set state to triger a render
-                    console.log(this.state.TodTasks);
-
+                    event.preventDefault(); 
+                    this.props.onSubmitInput(event.target.value);                 
                 }
 
                 render() {
                     console.log('render');
+                    const taskname = this.props.taskname;
                     return (
                         <form onSubmit={this.SubmitInput}>
                             <label>
                                 Task input:
-                                        <input type="text" value={this.state.inputvalue} onChange={this.inputChange} />
+                                        <input type="text" value={taskname} onChange={this.inputChange} />
                             </label>
                             <input type="submit" value="Add Task" />
-
-                            <div>
-                                Add this task into TaskList: {this.state.TodTasks}
-                            </div>
+                            
 
                         </form>
                     );
@@ -86,53 +77,70 @@ It renders a single task (checkbox, name of the task and a delete button).
                         this.index = this.props.index;
                     }
 
-                    /// Question ,why use arrow funcitron it works, but can use a normal funciton outside????
-                    /// ???? Cannot read property ‘setState’ of undefined
-                    /*  onClickdelete() {
-                      console.log('Click delete!');
-                      this.setState({ deleted: true});
-                      console.log(this.state.deleted);
-                      }*/
-
                     render() {
-                        console.log('render');
-                        if (this.state.deleted === true)
-                            return (  
-                                <React.Fragment>                        
-                                </React.Fragment>                              
-                            );
-                        else
-                            return (
+                        console.log('render');                   
+
+                            return ( (this.state.deleted === true)? null:
                                 <React.Fragment>  
-                                    <li ></li>
+                                    <li >{this.taskname}</li>
                                     <button type="button" onClick={() => { this.setState({ deleted: true }); }}>Delete </button>
-                                    <label><input type="checkbox" />{this.taskname}</label>
-                                    
+                                    <label><input type="checkbox"  
+                                        onClick={()=>{this.setState({completed:!this.state.completed})}} 
+                                        checked={this.state.completed}/>Completed</label>                                                      
                                 </React.Fragment> 
                             );
                     }
-                }
-
-        const tasks = [
-            { name: 'Buy milk', completed: true },
-            { name: 'Learn React', completed: false },
-        ];       
+                }          
 
 
          class APP extends React.Component {
                 constructor(props) {
                     super(props);
+                    this.state = {
+                        newTaskname: '', addTask:false,
+                        tasks: [
+                        { name: 'Buy milk', completed: true },
+                        { name: 'Learn React', completed: false } ]
+                        };
+
+                    this.handleinputChanged = this.handleinputChanged.bind(this);
+                    this.handleSubmitInput = this.handleSubmitInput.bind(this);
+
+                    this.tasks = [
+                        { name: 'Buy milk', completed: true },
+                        { name: 'Learn React', completed: false },
+                    ];  
+                }               
+                handleinputChanged(newtaskname) 
+                {
+                 this.setState({newTaskname: newtaskname });
                 }
+                handleSubmitInput(newtaskname) 
+                {
+                    // update to tasks array
+                 this.state.tasks.push({name:this.state.newTaskname,completed:false});
+                 this.setState({addTask: true});
+                 console.log(this.state.tasks);
+                }
+
                 render() {
+                    const taskname = this.state.newTaskname;
+                    const allCurTasks  = this.state.tasks;                 
                     return (
                         <React.Fragment>
-                        <TaskInput />
-                        <ol>
-                        <TaskList {...tasks[0]} />
-                        <TaskList {...tasks[1]} />
+                        <TaskInput 
+                        oninputChanged={this.handleinputChanged} 
+                        onSubmitInput={this.handleSubmitInput} />
+                        <ol>                        
+                        {
+                            allCurTasks.map(( task ) => (
+                                <TaskList {...task} />
+                            ))
+                        }
                         </ol>
                         </React.Fragment>
                          );
+                    
                 }
             }
         ReactDOM.render(

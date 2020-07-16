@@ -1,0 +1,91 @@
+<!--11. Change the Counter component by adding an input text box where user can enter a number. 
+    If '+' is clicked, the counter value increases by the number specified in the text box. Similarly for click on '-'.
+ -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+        <script type="text/babel">
+            // Step 1: Write a class-based component called "Counter" that shows a counter value (starting 0), and 2 buttons - "+" and "-". Clicking "+" increments the counter, and clicking "-" decrements the counter. The markup to be rendered this is provided below.
+            class InputStep extends React.Component {
+                    constructor(props) {
+                        super(props);
+                        this.handleChange = this.handleChange.bind(this);
+                    }
+
+                    handleChange(e) {
+                        this.props.onStepChange(e.target.value);
+                    }
+
+                    render() {
+                        const step = this.props.step;                        
+                        return (
+                            <fieldset>
+                                <legend>Enter step for this Counter :</legend>
+                                <input value={step}
+                                    onChange={this.handleChange} />
+                            </fieldset>
+                        );
+                    }
+                }
+            class Counter extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                    value: 0,
+                    step : 1
+                };
+                    this.handleStepChange = this.handleStepChange.bind(this);                   
+                }
+                
+
+                handleStepChange(newStep) {
+                    this.setState({ step:  newStep });
+                }
+                
+                increment() {                           
+                    const newVal =   this.state.value + parseInt(this.state.step,10);    
+                    console.log(`++new value=${newVal}`)   ;      
+                    this.setState({
+                        value: newVal
+                    });
+                }
+                
+                decrement() { 
+                    const newVal =   this.state.value -this.state.step;                      
+                    this.setState({
+                        value: newVal
+                    });
+                }
+
+                render() {
+                    return (
+                        <div>
+                            <InputStep   
+                                onStepChange={this.handleStepChange} />
+                            Counter: <span>{this.state.value}</span>
+                            <button onClick={() =>this.increment()}>+</button>
+                            <button onClick={() => this.decrement()}>-</button>
+
+                        </div>
+                    );
+                }
+            }          
+
+            ReactDOM.render( <Counter />, document.getElementById( 'root' ) );
+        </script>
+    </body>
+</html>

@@ -1,10 +1,39 @@
-<!-- React equivalent of a GitHub repo page -->
-<App>
-    <NavBar>
-        <BrandImage type="octocat" />
-        <Search />
-        <NavLinks>
-            
-        </Navlinks>
-    </Navbar>
-</App>
+<!-- 1. Design the component tree for a todo list application. This application maintains a list of things to do (task list), 
+    with indication if a task is completed or not. Each task has a checkbox against it to mark if it has been completed or not, 
+    and a button to delete the task from the list. On top of the task list is an input to accept the name of a new task to be added
+    to the list. Below the input is a button that the user clicks after entering the task name in the input. Once the user clicks 
+    the button, the task is added to the task list.
+    -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+        <script type="text/babel">
+
+            const el1 = (   
+                <div>             
+                    <input type="text" id="InputTaskname" value="new task"/>
+                    
+                    <button onclick={console.log('btn clicked')}> Add Task</button>   
+                </div>    
+                       
+                    );          
+
+              
+            ReactDOM.render( el1, document.getElementById( 'root' ) );
+        </script>
+    </body>
+</html>

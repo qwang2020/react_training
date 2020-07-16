@@ -1,0 +1,143 @@
+<!--12. Add state to the TaskList component and store tasks array in it. Implement add task, delete task, 
+    and marking task as complete/not complete functionality in the todo list app.
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+     <head>
+         <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+         <title>Document</title>
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+     </head>
+     <body>
+         <div id="root"></div>
+ 
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.4.2/umd/react.development.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.4.2/umd/react-dom.development.js"></script>
+         
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+ 
+         <script type="text/babel">
+ 
+             class TaskInput extends React.Component {
+                 constructor(props) {
+                     super(props);                   
+ 
+                     this.inputChange = this.inputChange.bind(this);
+                     this.SubmitInput = this.SubmitInput.bind(this);
+ 
+                 }
+ 
+                 inputChange(event) {
+                     console.log('inputChange');
+                     this.props.oninputChanged(event.target.value);
+                 }
+ 
+                 SubmitInput(event) {
+                     console.log('SubmitInput');
+                     event.preventDefault(); 
+                     this.props.onSubmitInput(event.target.value);                 
+                 }
+ 
+                 render() {
+                     console.log('render');
+                     const taskname = this.props.taskname;
+                     return (
+                         <form onSubmit={this.SubmitInput}>
+                             <label>
+                                 Task input:
+                                         <input type="text" value={taskname} onChange={this.inputChange} />
+                             </label>
+                             <input type="submit" value="Add Task" />
+                             
+ 
+                         </form>
+                     );
+                 }
+             }
+             class TaskItem extends React.Component {
+                     constructor(props) {
+                         super(props);
+                         this.state = {
+                             completed: this.props.completed,
+                             deleted: false,
+                         };
+                         this.taskname = this.props.name;
+                         this.index = this.props.index;
+                     }
+ 
+                     render() {
+                         console.log('render');                   
+ 
+                             return ( (this.state.deleted === true)? null:
+                             <React.Fragment>  
+                                    <li >{this.taskname}</li>
+                                    <button type="button" onClick={() => { this.setState({ deleted: true }); }}>Delete </button>
+                                    <label><input type="checkbox"  
+                                        onClick={()=>{this.setState({completed:!this.state.completed})}} 
+                                        checked={this.state.completed}/>Completed</label>                                                      
+                                </React.Fragment> 
+                             );
+                     }
+                 }          
+ 
+ 
+          class TaskListNew extends React.Component {
+                 constructor(props) {
+                     super(props);
+                     this.state = {
+                         newTaskname: '', addTask:false,
+                         tasks: [
+                         { name: 'Buy milk', completed: true },
+                         { name: 'Learn React', completed: false } ]
+                         };
+ 
+                     this.handleinputChanged = this.handleinputChanged.bind(this);
+                     this.handleSubmitInput = this.handleSubmitInput.bind(this);
+ 
+                     this.tasks = [
+                         { name: 'Buy milk', completed: true },
+                         { name: 'Learn React', completed: false },
+                     ];  
+                 }               
+                 handleinputChanged(newtaskname) 
+                 {
+                  this.setState({newTaskname: newtaskname });
+                 }
+                 handleSubmitInput(newtaskname) 
+                 {
+                     // update to tasks array
+                  this.state.tasks.push({name:this.state.newTaskname,completed:false});
+                  this.setState({addTask: true});
+                  console.log(this.state.tasks);
+                 }
+ 
+                 render() {
+                     const taskname = this.state.newTaskname;
+                     const allCurTasks  = this.state.tasks;                 
+                     return (
+                         <React.Fragment>
+                         <TaskInput 
+                         oninputChanged={this.handleinputChanged} 
+                         onSubmitInput={this.handleSubmitInput} />
+                         <ol>                        
+                         {
+                             allCurTasks.map(( task ) => (
+                                 <TaskItem {...task} />
+                             ))
+                         }
+                         </ol>
+                         </React.Fragment>
+                          );
+                     
+                 }
+             }
+         ReactDOM.render(
+                     <TaskListNew />,
+                     document.getElementById('root')
+                 );
+ 
+         </script>
+     </body>
+ </html>
