@@ -35,7 +35,7 @@
                         return (
                             <fieldset>
                                 <legend>Enter step for this Counter :</legend>
-                                <input value={step}
+                                <input type="number" value={step}
                                     onChange={this.handleChange} />
                             </fieldset>
                         );
@@ -53,11 +53,12 @@
                 
 
                 handleStepChange(newStep) {
-                    this.setState({ step:  newStep });
+                    this.setState({ step:  parseInt(newStep,10) });
                 }
                 
-                increment() {                           
-                    const newVal =   this.state.value + parseInt(this.state.step,10);    
+                increment() { 
+                    const newVal =   this.state.value + this.state.step;   
+                    console.log(Number.isInteger(this.state.step)) ;
                     console.log(`++new value=${newVal}`)   ;      
                     this.setState({
                         value: newVal
@@ -65,7 +66,8 @@
                 }
                 
                 decrement() { 
-                    const newVal =   this.state.value -this.state.step;                      
+                    const newVal =   this.state.value -this.state.step;    
+                    console.log(Number.isInteger(this.state.step)) ;                  
                     this.setState({
                         value: newVal
                     });

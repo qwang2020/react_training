@@ -64,24 +64,37 @@
              class TaskItem extends React.Component {
                      constructor(props) {
                          super(props);
-                         this.state = {
-                             completed: this.props.completed,
-                             deleted: false,
-                         };
+                         
                          this.taskname = this.props.name;
                          this.index = this.props.index;
+                         this.completed = this.props.completed;
+                         this.deleted   = this.props.deleted;;
+                         this.checkboxchanged = this.checkboxchanged.bind(this);
+                         this.Deletebuttonclick = this.Deletebuttonclick.bind(this);
+                         console.log(`TaskItem construct ${this.taskname}`);
                      }
  
+                     checkboxchanged(event)
+                     {   
+                        this.props.oncheckboxchanged(this.taskname);
+                     }
+                     Deletebuttonclick(event)
+                     {   
+                        this.props.onDeletebuttonclick(this.taskname);
+                     }
                      render() {                                       
  
-                             return ( (this.state.deleted === true)? null:
+                             console.log(`TaskItem render ${this.taskname}`);
+                             return ( (this.props.deleted === true)? null:
                              <React.Fragment>  
                                  <li className="card border-primary"
-                                     style={{textDecoration: this.state.completed ? "line-through" : "none",
-                                     color: this.state.completed ? "red" : "black" }} >{this.taskname}</li>
-                                 <button type="button" onClick={() => { this.setState({ deleted: true }); }}>Delete </button>
-                                 <label><input type="checkbox"  onClick={()=>{this.setState({completed:!this.state.completed})}} 
-                                 checked={this.state.completed}/>Completed</label>                                
+                                     style={{textDecoration: this.props.completed ? "line-through" : "none",
+                                     color: this.props.completed ? "red" : "black" }}
+                                     >{this.taskname}</li>
+                                 <button type="button" onClick={this.Deletebuttonclick}>Delete </button>
+                                 <label><input type="checkbox"  onClick={this.checkboxchanged}
+                                                                onChange={this.checkboxchanged}
+                                                                checked={this.props.completed}/>Completed</label>                                
                                  
                              </React.Fragment> 
                              );
@@ -94,21 +107,20 @@
                      super(props);
                      this.state = {
                          newTaskname: '', 
-                         addTask:false,
+                         TasksChanged:false,
+                         
                          filter:  'all',
                          tasks: [
-                         { name: 'Buy milk', completed: true },
-                         { name: 'Learn React', completed: false } ]
+                         { name: 'Buy milk', completed: true ,deleted:false},
+                         { name: 'Learn React', completed: false,deleted:false } ]
                          };
  
                      this.handleinputChanged = this.handleinputChanged.bind(this);
                      this.handleSubmitInput = this.handleSubmitInput.bind(this);
                      this.handlefilterChange = this.handlefilterChange.bind(this);
- 
-                     this.tasks = [
-                         { name: 'Buy milk', completed: true },
-                         { name: 'Learn React', completed: false },
-                     ];  
+                     this.ItemCheckbxoChange = this.ItemCheckbxoChange.bind(this); 
+                     this.ItemDeleted = this.ItemDeleted.bind(this);                    
+                     
                  }               
                  handleinputChanged(newtaskname) 
                  {
@@ -119,18 +131,39 @@
                      console.log(this.state.filter);
                      console.log(` new filter is: ${event.target.value}`);
                     this.setState({filter: event.target.value });
+                    this.setState({TasksChanged: true});
                  }
                  handleSubmitInput(newtaskname) 
                  {
                      // update to tasks array
-                  this.state.tasks.push({name:this.state.newTaskname,completed:false});
-                  this.setState({addTask: true});
+                  this.state.tasks.push({name:this.state.newTaskname,completed:false,deleted:false});
+                  this.setState({TasksChanged: true});
                   console.log(this.state.tasks);
                  }
                 
+                 ItemCheckbxoChange(taskname) 
+                 {
+                   this.state.tasks.map(
+                      (taskitem)=>{
+                          if(taskitem.name===taskname)
+                              taskitem.completed=!taskitem.completed;
+                      } ) ;
+
+                  this.setState({TasksChanged: true});
+                 }
+                 ItemDeleted(taskname) 
+                 {
+                   this.state.tasks.map(
+                      (taskitem)=>{
+                          if(taskitem.name===taskname)
+                              taskitem.deleted=true;
+                      } ) ;
+
+                  this.setState({TasksChanged: true});
+                 }
                  render() {
-                     const taskname = this.state.newTaskname;
-                     const allCurTasks  = this.state.tasks.filter( (task)=>{
+                     const newtaskname = this.state.newTaskname;
+                     let allCurTasks  = this.state.tasks.filter( (task)=>{
                         if (this.state.filter === 'completed')
                          return task.completed === true;
                      else if (this.state.filter === 'notcompleted')
@@ -139,7 +172,10 @@
                          return true;
                      }
                      );     
-                     console.log(allCurTasks);            
+                     console.log(allCurTasks);  
+                     /// here is the magic
+                     /// As Facebook office site said, must !! set a key for those array elements
+                     /// otherwise, the element not been indifify correctly. the 1st task always wrong!!!          
                      return (
                          <React.Fragment>
                          <TaskInput 
@@ -148,7 +184,7 @@
                          <div>
                             Use Filter :
                          <select value={this.state.filter} onChange={this.handlefilterChange}>
-                                 <option selected value="all">ALL</option>
+                                 <option value="all">ALL</option>
                                  <option value="completed">Completed</option>
                                  <option value="notcompleted">Not completed</option>                                
                          </select>
@@ -156,8 +192,11 @@
                          
                          <ol>                                            
                          {
-                             allCurTasks.map(( taskitem ) => (
-                                 <TaskItem {...taskitem} />
+                             allCurTasks.map(( taskitem,index ) => (                               
+                                  <TaskItem
+                                  oncheckboxchanged = {this.ItemCheckbxoChange}
+                                  onDeletebuttonclick = {this.ItemDeleted}
+                                   {...taskitem} key={taskitem.name} />
                              ))
                          }
                          </ol>
